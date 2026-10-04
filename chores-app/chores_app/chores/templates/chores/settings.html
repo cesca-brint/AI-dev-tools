@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+        }
+        input, select {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .member-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 4px;
+        }
+        .inline-form {
+            display: inline-block;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Chores List App</h1>
+    </div>
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'chores_list' %}">Chores</a>
+            <a href="{% url 'calendar' %}">Calendar</a>
+            <a href="{% url 'settings' %}">Settings</a>
+            <a href="{% url 'leaderboard' %}">Leaderboard</a>
+        </div>
+
+        <h2>Reminders</h2>
+        {% if assignment %}
+            <form action="{% url 'update_reminders' assignment.id %}" method="post">
+                {% csrf_token %}
+                <label for="reminder_time">Reminder Time:</label>
+                <input type="time" id="reminder_time" name="reminder_time" required>
+                
+                <label for="enabled">Enable Reminders:</label>
+                <select id="enabled" name="enabled" required>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+                <button type="submit">Save Changes</button>
+            </form>
+        {% else %}
+            <p><em>No chore assignment selected to set reminders for.</em></p>
+        {% endif %}
+
+        <h2>Family Members</h2>
+        <ul>
+            {% for member in family_members %}
+                <li class="member-item">
+                    <strong>{{ member.name }}</strong>
+                    
+                    {% if member.id %}
+                        <form action="{% url 'edit_family_member' member.id %}" method="post" class="inline-form">
+                            {% csrf_token %}
+                            <input type="text" name="name" placeholder="New Name" required>
+                            <button type="submit">Edit</button>
+                        </form>
+                        
+                        <form action="{% url 'delete_family_member' member.id %}" method="post" class="inline-form">
+                            {% csrf_token %}
+                            <button type="submit">Delete</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>No family members added yet.</li>
+            {% endfor %}
+        </ul>
+
+        {% if 'add_family_member' in url_names %}
+            <form action="{% url 'add_family_member' %}" method="post">
+                {% csrf_token %}
+                <label for="name">Add New Member:</label>
+                <input type="text" id="name" name="name" required>
+                <button type="submit">Add</button>
+            </form>
+        {% endif %}
+    </div>
+</body>
+</html>

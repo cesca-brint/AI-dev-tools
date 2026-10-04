@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chores List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+        }
+        input, select {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Chores List App</h1>
+    </div>
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'chores_list' %}">Chores</a>
+            <a href="{% url 'calendar' %}">Calendar</a>
+            <a href="{% url 'settings' %}">Settings</a>
+            <a href="{% url 'leaderboard' %}">Leaderboard</a>
+        </div>
+        <h2>Chores List</h2>
+        <table>
+            <tr>
+                <th>Chore</th>
+                <th>Assigned To</th>
+                <th>Completed?</th>
+                <th>Mark as Completed</th>
+                <th>Add Chore</th>
+                <th>Update Reminders</th>
+            </tr>
+            {% for assignment in assignments %}
+            <tr>
+                <td>{{ assignment.chore.name }}</td>
+                <td>{{ assignment.family_member.name }}</td>
+                <td>{{ assignment.completed_date|default:"Not Completed" }}</td>
+                <td>
+                    <form action="{% url 'chores_list' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="completed_date" value="{{ assignment.assigned_date }}">
+                        <button type="submit">Mark as Completed</button>
+                    </form>
+                </td>
+                <td><a href="{% url 'add_chore' %}">Add Chore</a></td>
+                <td><a href="{% url 'update_reminders' assignment.id %}">Update Reminders</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <h2>Add Chore</h2>
+        <form action="{% url 'add_chore' %}" method="post">
+            {% csrf_token %}
+            <label for="name">Chore Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+            <label for="points">Points:</label>
+            <input type="number" id="points" name="points" required>
+            <label for="type">Type:</label>
+            <select id="type" name="type" required>
+                <option value="general">General</option>
+                <option value="room-specific">Room-Specific</option>
+            </select>
+            <button type="submit">Add Chore</button>
+        </form>
+        <a href="{% url 'chores_list' %}">Back to Chores List</a>
+    </div>
+</body>
+</html>

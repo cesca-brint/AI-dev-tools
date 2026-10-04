@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+        }
+        .home-section {
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            background-color: #4caf50;
+            width: 50%; /* Example progress */
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Chores List App</h1>
+    </div>
+    <div class="container">
+        <div class="home-section">
+            <h2>Today's Chores</h2>
+            <table>
+                <tr>
+                    <th>Chore</th>
+                    <th>Assigned To</th>
+                    <th>Completed?</th>
+                </tr>
+                <tr>
+                    <td>Wash dishes</td>
+                    <td>John</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td>Vacuum living room</td>
+                    <td>Jane</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Sweep kitchen</td>
+                    <td>Bob</td>
+                    <td>No</td>
+                </tr>
+            </table>
+        </div>
+        <div class="home-section">
+            <h2>Weekly Progress</h2>
+            <div class="progress-bar">
+                <span style="width: 50%;"></span>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'chores_list' %}">Chores</a>
+            <a href="{% url 'calendar' %}">Calendar</a>
+            <a href="{% url 'settings' %}">Settings</a>
+            <a href="{% url 'leaderboard' %}">Leaderboard</a>
+        </div>
+    </div>
+</body>
+</html>

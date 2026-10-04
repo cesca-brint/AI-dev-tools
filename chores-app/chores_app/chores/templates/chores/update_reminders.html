@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+   <html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>Update Reminders</title>
+       <style>
+           body {
+               font-family: Arial, sans-serif;
+               background-color: #f4f4f4;
+               margin: 0;
+               padding: 0;
+           }
+           .header {
+               background-color: #333;
+               color: #fff;
+               padding: 10px;
+               text-align: center;
+           }
+           .container {
+               padding: 20px;
+           }
+           form {
+               display: flex;
+               flex-direction: column;
+           }
+           label {
+               margin-bottom: 5px;
+           }
+           input, select {
+               margin-bottom: 10px;
+           }
+           button {
+               padding: 10px;
+               background-color: #4CAF50;
+               color: white;
+               border: none;
+               cursor: pointer;
+           }
+       </style>
+   </head>
+   <body>
+       <div class="header">
+           <h1>Chores List App</h1>
+       </div>
+       <div class="container">
+           <h2>Update Reminders</h2>
+           <form action="{% url 'update_reminders' assignment.id %}" method="post">
+               {% csrf_token %}
+               <label for="completed_date">Completion Date:</label>
+               <input type="date" id="completed_date" name="completed_date" required>
+               <button type="submit">Update Reminders</button>
+           </form>
+           <a href="{% url 'chores_list' %}">Back to Chores List</a>
+       </div>
+   </body>
+   </html>
