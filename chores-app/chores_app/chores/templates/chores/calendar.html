@@ -1,181 +1,470 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50 text-slate-800">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendar</title>
+    <title>Calendar - Chores List App</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+        .light-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 232, 240, 0.85);
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
         }
-        .header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
+        .light-header {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.85);
         }
-        .container {
-            padding: 20px;
+        .nav-link {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .nav-buttons {
-            display: flex;
-            justify-content: space-around;
+        .nav-link:hover {
+            transform: translateY(-1px);
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
         }
-        th {
-            background-color: #f2f2f2;
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
-<body>
-    <div class="header">
-        <h1>Chores List App</h1>
+<body class="min-h-full flex flex-col font-sans antialiased bg-gradient-to-br from-slate-50 via-emerald-50/20 to-teal-50/30 text-slate-800 pb-28 md:pb-12">
+
+    <header class="sticky top-0 z-40 light-header px-4 sm:px-8 py-3.5 shadow-sm">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-md shadow-emerald-500/20 text-white">
+                    <i class="fa-solid fa-house text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                        Chores List App
+                    </h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">Household Schedule & Calendar</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <span class="hidden sm:inline-flex items-center px-3 py-1 text-xs font-semibold bg-emerald-100/80 text-emerald-700 border border-emerald-200 rounded-full">
+                    <i class="fa-solid fa-circle text-[8px] mr-1.5 text-emerald-500 animate-pulse"></i> Live Calendar
+                </span>
+                <div class="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition cursor-pointer shadow-sm">
+                    <i class="fa-regular fa-user text-sm"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-8 py-8 space-y-8">
+
+        <nav class="hidden md:flex items-center justify-between light-card p-2 rounded-2xl">
+            <div class="flex items-center space-x-1 w-full justify-around">
+                <a href="{% url 'home' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <i class="fa-solid fa-house text-sm text-slate-400"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{% url 'chores_list' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <i class="fa-solid fa-list-check text-sm text-slate-400"></i>
+                    <span>Chores</span>
+                </a>
+                <a href="{% url 'calendar' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold shadow-md shadow-emerald-600/20">
+                    <i class="fa-regular fa-calendar-days text-sm"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="{% url 'leaderboard' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <i class="fa-solid fa-trophy text-sm text-slate-400"></i>
+                    <span>Leaderboard</span>
+                </a>
+                <a href="{% url 'settings' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <i class="fa-solid fa-gear text-sm text-slate-400"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-2 text-emerald-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                    <i class="fa-regular fa-calendar text-sm"></i> Interactive Schedule
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight" id="calendar-title">
+                    October 2026
+                </h2>
+            </div>
+
+            <!-- View Switcher Toggle -->
+            <div class="inline-flex p-1.5 bg-slate-200/80 rounded-2xl border border-slate-300/70 shadow-inner self-start sm:self-auto">
+                <button id="btn-month-view" onclick="switchView('month')" 
+                        class="px-4 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 bg-white text-emerald-700 shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-grid text-xs"></i>
+                    <span>Month View</span>
+                </button>
+                <button id="btn-week-view" onclick="switchView('week')" 
+                        class="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl transition-all duration-200 text-slate-600 hover:text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-week text-xs"></i>
+                    <span>Week View</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="month-view-container" class="light-card rounded-3xl p-4 sm:p-6 bg-white border border-slate-200/80 transition-all">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <i class="fa-regular fa-calendar-days text-emerald-600"></i>
+                    <span>October 2026 Overview</span>
+                </h3>
+                <span class="text-xs text-slate-500 font-medium">31 Days</span>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-center border-collapse min-w-[600px]">
+                    <thead>
+                        <tr class="text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+                            <th class="py-3 px-2 text-rose-500">Sun</th>
+                            <th class="py-3 px-2">Mon</th>
+                            <th class="py-3 px-2">Tue</th>
+                            <th class="py-3 px-2">Wed</th>
+                            <th class="py-3 px-2">Thu</th>
+                            <th class="py-3 px-2">Fri</th>
+                            <th class="py-3 px-2">Sat</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700 text-sm">
+                        <!-- Row 1 -->
+                        <tr>
+                            <td class="p-2 sm:p-3 bg-slate-50/50 text-slate-300"></td>
+                            <td class="p-2 sm:p-3 bg-slate-50/50 text-slate-300"></td>
+                            <td class="p-2 sm:p-3 bg-slate-50/50 text-slate-300"></td>
+                            <td class="p-2 sm:p-3 bg-slate-50/50 text-slate-300"></td>
+                            <td class="p-2 sm:p-3 bg-slate-50/50 text-slate-300"></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl">
+                                <div class="font-semibold text-slate-800 mb-1">1</div>
+                            </td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl">
+                                <div class="font-semibold text-slate-800 mb-1">2</div>
+                            </td>
+                        </tr>
+                        <!-- Row 2 -->
+                        <tr>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl">
+                                <div class="font-semibold text-slate-800 mb-1">3</div>
+                            </td>
+                            <!-- Oct 4 Highlighted as Today -->
+                            <td class="p-2 sm:p-3 bg-emerald-50/60 ring-2 ring-emerald-500/30 rounded-xl">
+                                <div class="font-bold text-emerald-700 mb-1 flex items-center justify-between">
+                                    <span>4</span>
+                                    <span class="text-[9px] bg-emerald-600 text-white px-1.5 py-0.5 rounded-md font-bold uppercase">Today</span>
+                                </div>
+                                <div class="space-y-1">
+                                    <span class="block text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-medium truncate">Wash dishes</span>
+                                </div>
+                            </td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl">
+                                <div class="font-semibold text-slate-800 mb-1">5</div>
+                                <span class="block text-[10px] bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-medium truncate">Vacuum</span>
+                            </td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl">
+                                <div class="font-semibold text-slate-800 mb-1">6</div>
+                            </td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl">
+                                <div class="font-semibold text-slate-800 mb-1">7</div>
+                                <span class="block text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-medium truncate">Sweep kitchen</span>
+                            </td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl">
+                                <div class="font-semibold text-slate-800 mb-1">8</div>
+                            </td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl">
+                                <div class="font-semibold text-slate-800 mb-1">9</div>
+                            </td>
+                        </tr>
+                        <!-- Row 3 -->
+                        <tr>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">10</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">11</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">12</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">13</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">14</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">15</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">16</div></td>
+                        </tr>
+                        <!-- Row 4 -->
+                        <tr>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">17</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">18</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">19</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">20</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">21</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">22</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">23</div></td>
+                        </tr>
+                        <!-- Row 5 -->
+                        <tr>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">24</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">25</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">26</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">27</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">28</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">29</div></td>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">30</div></td>
+                        </tr>
+                        <!-- Row 6 -->
+                        <tr>
+                            <td class="p-2 sm:p-3 hover:bg-slate-50 transition rounded-xl"><div class="font-semibold text-slate-800">31</div></td>
+                            <td class="p-2 sm:p-3 bg-slate-50/50 text-slate-300"></td>
+                            <td class="p-2 sm:p-3 bg-slate-50/50 text-slate-300"></td>
+                            <td class="p-2 sm:p-3 bg-slate-50/50 text-slate-300"></td>
+                            <td class="p-2 sm:p-3 bg-slate-50/50 text-slate-300"></td>
+                            <td class="p-2 sm:p-3 bg-slate-50/50 text-slate-300"></td>
+                            <td class="p-2 sm:p-3 bg-slate-50/50 text-slate-300"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="week-view-container" class="hidden light-card rounded-3xl p-4 sm:p-6 bg-white border border-slate-200/80 transition-all">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-week text-emerald-600"></i>
+                    <span>Current Week Schedule (Oct 4 - Oct 10, 2026)</span>
+                </h3>
+                <span class="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-bold">Week 41</span>
+            </div>
+
+            <!-- Single 7-Day Week Columns Header -->
+            <div class="overflow-x-auto">
+                <div class="min-w-[700px]">
+                    <div class="grid grid-cols-7 gap-2 mb-3">
+                        <!-- Sun Oct 4 -->
+                        <div class="bg-emerald-50 border-2 border-emerald-500/40 p-3 rounded-2xl text-center shadow-sm">
+                            <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider block">Sun</span>
+                            <span class="text-lg font-black text-emerald-900 block">4</span>
+                            <span class="text-[9px] bg-emerald-600 text-white px-1.5 py-0.5 rounded-full font-bold uppercase inline-block mt-0.5">Today</span>
+                        </div>
+                        <!-- Mon Oct 5 -->
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl text-center">
+                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Mon</span>
+                            <span class="text-lg font-bold text-slate-800 block">5</span>
+                        </div>
+                        <!-- Tue Oct 6 -->
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl text-center">
+                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Tue</span>
+                            <span class="text-lg font-bold text-slate-800 block">6</span>
+                        </div>
+                        <!-- Wed Oct 7 -->
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl text-center">
+                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Wed</span>
+                            <span class="text-lg font-bold text-slate-800 block">7</span>
+                        </div>
+                        <!-- Thu Oct 8 -->
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl text-center">
+                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Thu</span>
+                            <span class="text-lg font-bold text-slate-800 block">8</span>
+                        </div>
+                        <!-- Fri Oct 9 -->
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl text-center">
+                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Fri</span>
+                            <span class="text-lg font-bold text-slate-800 block">9</span>
+                        </div>
+                        <!-- Sat Oct 10 -->
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl text-center">
+                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Sat</span>
+                            <span class="text-lg font-bold text-slate-800 block">10</span>
+                        </div>
+                    </div>
+
+                    <!-- Single 7-Day Column Cards for Chores -->
+                    <div class="grid grid-cols-7 gap-2 min-h-[320px]">
+                        <!-- Sun Oct 4 Column -->
+                        <div class="bg-emerald-50/40 border border-emerald-200/80 rounded-2xl p-2 space-y-2">
+                            <div class="p-2.5 bg-white border border-emerald-200 rounded-xl shadow-sm hover:shadow-md transition">
+                                <span class="text-[10px] font-semibold text-emerald-600 block mb-0.5">09:00 AM</span>
+                                <h4 class="text-xs font-bold text-slate-900">Wash dishes</h4>
+                                <p class="text-[10px] text-slate-500 mt-0.5"><i class="fa-regular fa-user mr-1"></i>John</p>
+                                <span class="mt-1.5 inline-flex items-center text-[9px] font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-md">
+                                    <i class="fa-solid fa-clock mr-1 text-[8px]"></i> Pending
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Mon Oct 5 Column -->
+                        <div class="bg-slate-50/60 border border-slate-200/80 rounded-2xl p-2 space-y-2">
+                            <div class="p-2.5 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition">
+                                <span class="text-[10px] font-semibold text-indigo-600 block mb-0.5">10:30 AM</span>
+                                <h4 class="text-xs font-bold text-slate-900">Vacuum living room</h4>
+                                <p class="text-[10px] text-slate-500 mt-0.5"><i class="fa-regular fa-user mr-1"></i>Jane</p>
+                                <span class="mt-1.5 inline-flex items-center text-[9px] font-bold bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-md">
+                                    <i class="fa-solid fa-check mr-1 text-[8px]"></i> Done
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Tue Oct 6 Column -->
+                        <div class="bg-slate-50/60 border border-slate-200/80 rounded-2xl p-2 space-y-2">
+                            <div class="p-2.5 bg-slate-100/50 border border-dashed border-slate-300 rounded-xl text-center py-6 text-slate-400">
+                                <i class="fa-regular fa-calendar-check text-base block mb-1"></i>
+                                <span class="text-[10px] font-medium">No chores</span>
+                            </div>
+                        </div>
+
+                        <!-- Wed Oct 7 Column -->
+                        <div class="bg-slate-50/60 border border-slate-200/80 rounded-2xl p-2 space-y-2">
+                            <div class="p-2.5 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition">
+                                <span class="text-[10px] font-semibold text-amber-600 block mb-0.5">04:00 PM</span>
+                                <h4 class="text-xs font-bold text-slate-900">Sweep kitchen</h4>
+                                <p class="text-[10px] text-slate-500 mt-0.5"><i class="fa-regular fa-user mr-1"></i>Bob</p>
+                                <span class="mt-1.5 inline-flex items-center text-[9px] font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-md">
+                                    <i class="fa-solid fa-clock mr-1 text-[8px]"></i> Pending
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Thu Oct 8 Column -->
+                        <div class="bg-slate-50/60 border border-slate-200/80 rounded-2xl p-2 space-y-2">
+                            <div class="p-2.5 bg-slate-100/50 border border-dashed border-slate-300 rounded-xl text-center py-6 text-slate-400">
+                                <i class="fa-regular fa-calendar-check text-base block mb-1"></i>
+                                <span class="text-[10px] font-medium">No chores</span>
+                            </div>
+                        </div>
+
+                        <!-- Fri Oct 9 Column -->
+                        <div class="bg-slate-50/60 border border-slate-200/80 rounded-2xl p-2 space-y-2">
+                            <div class="p-2.5 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition">
+                                <span class="text-[10px] font-semibold text-teal-600 block mb-0.5">05:00 PM</span>
+                                <h4 class="text-xs font-bold text-slate-900">Take out trash</h4>
+                                <p class="text-[10px] text-slate-500 mt-0.5"><i class="fa-regular fa-user mr-1"></i>John</p>
+                                <span class="mt-1.5 inline-flex items-center text-[9px] font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-md">
+                                    <i class="fa-solid fa-clock mr-1 text-[8px]"></i> Scheduled
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Sat Oct 10 Column -->
+                        <div class="bg-slate-50/60 border border-slate-200/80 rounded-2xl p-2 space-y-2">
+                            <div class="p-2.5 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition">
+                                <span class="text-[10px] font-semibold text-purple-600 block mb-0.5">11:00 AM</span>
+                                <h4 class="text-xs font-bold text-slate-900">Lawn Mowing</h4>
+                                <p class="text-[10px] text-slate-500 mt-0.5"><i class="fa-regular fa-user mr-1"></i>Bob</p>
+                                <span class="mt-1.5 inline-flex items-center text-[9px] font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-md">
+                                    <i class="fa-solid fa-clock mr-1 text-[8px]"></i> Scheduled
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="nav-buttons fixed bottom-0 left-0 right-0 z-50 md:hidden light-header p-2.5 px-4">
+        <div class="flex items-center justify-around max-w-md mx-auto">
+            <a href="{% url 'home' %}" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 transition text-[11px] font-medium">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-house text-sm"></i>
+                </div>
+                <span>Home</span>
+            </a>
+
+            <a href="{% url 'chores_list' %}" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 transition text-[11px] font-medium">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-list-check text-sm"></i>
+                </div>
+                <span>Chores</span>
+            </a>
+
+            <a href="{% url 'calendar' %}" class="flex flex-col items-center gap-1 text-emerald-600 font-semibold text-[11px]">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
+                    <i class="fa-regular fa-calendar-days text-sm"></i>
+                </div>
+                <span>Calendar</span>
+            </a>
+
+            <a href="{% url 'leaderboard' %}" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 transition text-[11px] font-medium">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-trophy text-sm"></i>
+                </div>
+                <span>Leaderboard</span>
+            </a>
+
+            <a href="{% url 'settings' %}" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 transition text-[11px] font-medium">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-gear text-sm"></i>
+                </div>
+                <span>Settings</span>
+            </a>
+        </div>
     </div>
-    <div class="container">
-        <div class="nav-buttons">
-            <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'chores_list' %}">Chores</a>
-            <a href="{% url 'calendar' %}">Calendar</a>
-            <a href="{% url 'settings' %}">Settings</a>
-            <a href="{% url 'leaderboard' %}">Leaderboard</a>
-        </div>
-        <div class="month-view">
-            <h2>Month View</h2>
-            <table>
-                <tr>
-                    <th>Sun</th>
-                    <th>Mon</th>
-                    <th>Tue</th>
-                    <th>Wed</th>
-                    <th>Thu</th>
-                    <th>Fri</th>
-                    <th>Sat</th>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>1</td>
-                    <td>2</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                </tr>
-                <tr>
-                    <td>10</td>
-                    <td>11</td>
-                    <td>12</td>
-                    <td>13</td>
-                    <td>14</td>
-                    <td>15</td>
-                    <td>16</td>
-                </tr>
-                <tr>
-                    <td>17</td>
-                    <td>18</td>
-                    <td>19</td>
-                    <td>20</td>
-                    <td>21</td>
-                    <td>22</td>
-                    <td>23</td>
-                </tr>
-                <tr>
-                    <td>24</td>
-                    <td>25</td>
-                    <td>26</td>
-                    <td>27</td>
-                    <td>28</td>
-                    <td>29</td>
-                    <td>30</td>
-                </tr>
-                <tr>
-                    <td>31</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-        <div class="week-view">
-            <h2>Week View</h2>
-            <table>
-                <tr>
-                    <th>Sun</th>
-                    <th>Mon</th>
-                    <th>Tue</th>
-                    <th>Wed</th>
-                    <th>Thu</th>
-                    <th>Fri</th>
-                    <th>Sat</th>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                    <td>11</td>
-                    <td>12</td>
-                    <td>13</td>
-                </tr>
-                <tr>
-                    <td>14</td>
-                    <td>15</td>
-                    <td>16</td>
-                    <td>17</td>
-                    <td>18</td>
-                    <td>19</td>
-                    <td>20</td>
-                </tr>
-                <tr>
-                    <td>21</td>
-                    <td>22</td>
-                    <td>23</td>
-                    <td>24</td>
-                    <td>25</td>
-                    <td>26</td>
-                    <td>27</td>
-                </tr>
-                <tr>
-                    <td>28</td>
-                    <td>29</td>
-                    <td>30</td>
-                    <td>31</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </div>
+
+    <script>
+        function switchView(view) {
+            const monthContainer = document.getElementById('month-view-container');
+            const weekContainer = document.getElementById('week-view-container');
+            const btnMonth = document.getElementById('btn-month-view');
+            const btnWeek = document.getElementById('btn-week-view');
+            const calendarTitle = document.getElementById('calendar-title');
+
+            if (view === 'month') {
+                monthContainer.classList.remove('hidden');
+                weekContainer.classList.add('hidden');
+
+                btnMonth.className = "px-4 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 bg-white text-emerald-700 shadow-sm flex items-center gap-2";
+                btnWeek.className = "px-4 py-2 text-xs sm:text-sm font-medium rounded-xl transition-all duration-200 text-slate-600 hover:text-slate-900 flex items-center gap-2";
+
+                calendarTitle.innerText = "October 2026";
+            } else {
+                monthContainer.classList.add('hidden');
+                weekContainer.classList.remove('hidden');
+
+                btnWeek.className = "px-4 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 bg-white text-emerald-700 shadow-sm flex items-center gap-2";
+                btnMonth.className = "px-4 py-2 text-xs sm:text-sm font-medium rounded-xl transition-all duration-200 text-slate-600 hover:text-slate-900 flex items-center gap-2";
+
+                calendarTitle.innerText = "Current Week (Oct 4 - Oct 10)";
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,77 +1,432 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50 text-slate-800">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard</title>
+    <title>Leaderboard - Chores List App</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+        .light-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 232, 240, 0.85);
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
         }
-        .header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
+        .light-header {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.85);
         }
-        .container {
-            padding: 20px;
+        .nav-link {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .nav-buttons {
-            display: flex;
-            justify-content: space-around;
+        .nav-link:hover {
+            transform: translateY(-1px);
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .podium-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+        .podium-card:hover {
+            transform: translateY(-4px);
         }
-        th {
-            background-color: #f2f2f2;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
-<body>
-    <div class="header">
-        <h1>Chores List App</h1>
-    </div>
-    <div class="container">
-        <div class="nav-buttons">
-            <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'chores_list' %}">Chores</a>
-            <a href="{% url 'calendar' %}">Calendar</a>
-            <a href="{% url 'settings' %}">Settings</a>
-            <a href="{% url 'leaderboard' %}">Leaderboard</a>
+<body class="min-h-full flex flex-col font-sans antialiased bg-gradient-to-br from-slate-50 via-emerald-50/20 to-teal-50/30 text-slate-800 pb-28 md:pb-12">
+
+    <header class="sticky top-0 z-40 light-header px-4 sm:px-8 py-3.5 shadow-sm">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-md shadow-emerald-500/20 text-white">
+                    <i class="fa-solid fa-house text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                        Chores List App
+                    </h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">Household Leaderboard & Points Rankings</p>
+                </div>
+            </div>
+
+            <!-- Profile & Active Status Badge -->
+            <div class="flex items-center space-x-3">
+                <span class="hidden sm:inline-flex items-center px-3 py-1 text-xs font-semibold bg-emerald-100/80 text-emerald-700 border border-emerald-200 rounded-full">
+                    <i class="fa-solid fa-circle text-[8px] mr-1.5 text-emerald-500 animate-pulse"></i> Household Active
+                </span>
+                <div class="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition cursor-pointer shadow-sm">
+                    <i class="fa-regular fa-user text-sm"></i>
+                </div>
+            </div>
         </div>
-        <h2>Leaderboard</h2>
-        <table>
-            <tr>
-                <th>Family Member</th>
-                <th>Points</th>
-                <th>Completion Rate</th>
-            </tr>
-            <tr>
-                <td>John</td>
-                <td>100</td>
-                <td>90%</td>
-            </tr>
-            <tr>
-                <td>Jane</td>
-                <td>80</td>
-                <td>85%</td>
-            </tr>
-            <tr>
-                <td>Bob</td>
-                <td>70</td>
-                <td>75%</td>
-            </tr>
-        </table>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-8 py-8 space-y-8">
+
+        <!-- Desktop Navigation Bar (Preserved Django URL Tags) -->
+        <nav class="hidden md:flex items-center justify-between light-card p-2 rounded-2xl">
+            <div class="flex items-center space-x-1 w-full justify-around">
+                <a href="{% url 'home' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <i class="fa-solid fa-house text-sm text-slate-400"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{% url 'chores_list' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <i class="fa-solid fa-list-check text-sm text-slate-400"></i>
+                    <span>Chores</span>
+                </a>
+                <a href="{% url 'calendar' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <i class="fa-regular fa-calendar-days text-sm text-slate-400"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="{% url 'leaderboard' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold shadow-md shadow-emerald-600/20">
+                    <i class="fa-solid fa-trophy text-sm"></i>
+                    <span>Leaderboard</span>
+                </a>
+                <a href="{% url 'settings' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <i class="fa-solid fa-gear text-sm text-slate-400"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-2 text-emerald-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                    <i class="fa-solid fa-award"></i> Rankings & Statistics
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                    Leaderboard
+                </h2>
+            </div>
+            
+            <div class="flex items-center gap-3 bg-emerald-50 border border-emerald-200/80 p-3 px-4 rounded-2xl self-start md:self-auto">
+                <div class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-fire text-sm"></i>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-500 block font-medium">Current Season</span>
+                    <span class="text-xs font-bold text-emerald-800">Weekly Household Cup</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+            
+            <!-- 2nd Place - Silver (Jane) -->
+            <div class="podium-card light-card rounded-3xl p-6 relative flex flex-col justify-between border-t-4 border-t-slate-300 order-2 md:order-1">
+                <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-slate-200 text-slate-700 font-black text-xs px-3 py-1 rounded-full shadow-sm border border-slate-300 flex items-center gap-1">
+                    <i class="fa-solid fa-medal text-slate-500"></i> 2nd Place
+                </div>
+                <div class="text-center pt-2">
+                    <div class="relative inline-block mb-3">
+                        <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-slate-200 to-slate-100 border-4 border-white shadow-md flex items-center justify-center text-slate-700 text-2xl font-bold mx-auto">
+                            J
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-slate-300 text-slate-800 font-black text-xs flex items-center justify-center border-2 border-white shadow-sm">
+                            2
+                        </span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900">Jane</h3>
+                    <p class="text-xs font-semibold text-slate-500 mb-4">Silver Challenger</p>
+                </div>
+                <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/60">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-500 font-medium">Points Earned</span>
+                        <span class="font-extrabold text-slate-900 text-sm">80 pts</span>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[11px] font-semibold">
+                            <span class="text-slate-500">Completion Rate</span>
+                            <span class="text-slate-700">85%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                            <div class="bg-slate-400 h-2 rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1st Place - Gold (John) -->
+            <div class="podium-card light-card rounded-3xl p-6 relative flex flex-col justify-between border-t-4 border-t-amber-400 shadow-xl shadow-amber-500/10 order-1 md:order-2 md:-mt-4 bg-gradient-to-b from-amber-50/40 via-white to-white">
+                <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-400 text-amber-950 font-black text-xs px-3.5 py-1 rounded-full shadow-md flex items-center gap-1.5 border border-amber-300">
+                    <i class="fa-solid fa-crown text-amber-900"></i> 1st Place Champion
+                </div>
+                <div class="text-center pt-2">
+                    <div class="relative inline-block mb-3">
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-amber-200 via-amber-100 to-yellow-300 border-4 border-white shadow-lg flex items-center justify-center text-amber-900 text-3xl font-extrabold mx-auto">
+                            J
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-amber-400 text-amber-950 font-black text-sm flex items-center justify-center border-2 border-white shadow-md">
+                            1
+                        </span>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-900">John</h3>
+                    <p class="text-xs font-bold text-amber-600 mb-4">Gold Leader</p>
+                </div>
+                <div class="space-y-3 bg-amber-50/80 p-4 rounded-2xl border border-amber-200/80">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-amber-900/70 font-medium">Points Earned</span>
+                        <span class="font-black text-amber-900 text-base">100 pts</span>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[11px] font-bold">
+                            <span class="text-amber-800/80">Completion Rate</span>
+                            <span class="text-amber-900">90%</span>
+                        </div>
+                        <div class="w-full bg-amber-200/80 rounded-full h-2.5 overflow-hidden">
+                            <div class="bg-amber-500 h-2.5 rounded-full shadow-sm" style="width: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3rd Place - Bronze (Bob) -->
+            <div class="podium-card light-card rounded-3xl p-6 relative flex flex-col justify-between border-t-4 border-t-amber-700/60 order-3">
+                <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-100 text-amber-900 font-black text-xs px-3 py-1 rounded-full shadow-sm border border-amber-200 flex items-center gap-1">
+                    <i class="fa-solid fa-award text-amber-700"></i> 3rd Place
+                </div>
+                <div class="text-center pt-2">
+                    <div class="relative inline-block mb-3">
+                        <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-100 to-amber-50 border-4 border-white shadow-md flex items-center justify-center text-amber-800 text-2xl font-bold mx-auto">
+                            B
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-amber-700 text-white font-black text-xs flex items-center justify-center border-2 border-white shadow-sm">
+                            3
+                        </span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900">Bob</h3>
+                    <p class="text-xs font-semibold text-slate-500 mb-4">Bronze Contender</p>
+                </div>
+                <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/60">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-500 font-medium">Points Earned</span>
+                        <span class="font-extrabold text-slate-900 text-sm">70 pts</span>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[11px] font-semibold">
+                            <span class="text-slate-500">Completion Rate</span>
+                            <span class="text-slate-700">75%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                            <div class="bg-amber-600 h-2 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="light-card rounded-3xl overflow-hidden border border-slate-200/80 bg-white">
+            <div class="p-6 sm:p-8 border-b border-slate-200/80 flex items-center justify-between bg-slate-50/50">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900">Overall Standings</h3>
+                    <p class="text-xs text-slate-500">Complete list of household members and current performance scores</p>
+                </div>
+                <div class="hidden sm:flex items-center text-xs text-slate-500 font-medium bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
+                    <i class="fa-regular fa-clock mr-1.5 text-emerald-600"></i> Updated live
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100/80 border-b border-slate-200/80 text-xs font-bold uppercase tracking-wider text-slate-600">
+                            <th class="py-4 px-6">Rank</th>
+                            <th class="py-4 px-6">Family Member</th>
+                            <th class="py-4 px-6 text-center">Points</th>
+                            <th class="py-4 px-6">Completion Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200/70 text-sm bg-white">
+                        
+                        <!-- Row 1: John (Preserving original exact data) -->
+                        <tr class="hover:bg-amber-50/30 transition-colors">
+                            <td class="py-4 px-6 font-bold text-slate-900">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-full bg-amber-400 text-amber-950 font-black text-xs flex items-center justify-center shadow-sm">
+                                        1
+                                    </span>
+                                    <i class="fa-solid fa-crown text-amber-500 text-xs hidden sm:inline"></i>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6 font-bold text-slate-900">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-amber-100 text-amber-900 font-extrabold flex items-center justify-center text-xs border border-amber-300">
+                                        J
+                                    </div>
+                                    <span>John</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6 text-center">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-200">
+                                    100
+                                </span>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-3 max-w-xs">
+                                    <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden border border-slate-200/60">
+                                        <div class="bg-emerald-500 h-2.5 rounded-full" style="width: 90%"></div>
+                                    </div>
+                                    <span class="font-bold text-xs text-slate-700 min-w-[35px]">90%</span>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 2: Jane (Preserving original exact data) -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="py-4 px-6 font-bold text-slate-900">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-full bg-slate-300 text-slate-800 font-black text-xs flex items-center justify-center shadow-sm">
+                                        2
+                                    </span>
+                                    <i class="fa-solid fa-medal text-slate-400 text-xs hidden sm:inline"></i>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6 font-bold text-slate-900">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-slate-100 text-slate-800 font-extrabold flex items-center justify-center text-xs border border-slate-300">
+                                        J
+                                    </div>
+                                    <span>Jane</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6 text-center">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-slate-100 text-slate-800 border border-slate-200">
+                                    80
+                                </span>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-3 max-w-xs">
+                                    <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden border border-slate-200/60">
+                                        <div class="bg-emerald-500 h-2.5 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                    <span class="font-bold text-xs text-slate-700 min-w-[35px]">85%</span>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 3: Bob (Preserving original exact data) -->
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="py-4 px-6 font-bold text-slate-900">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-full bg-amber-700 text-white font-black text-xs flex items-center justify-center shadow-sm">
+                                        3
+                                    </span>
+                                    <i class="fa-solid fa-award text-amber-700 text-xs hidden sm:inline"></i>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6 font-bold text-slate-900">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-amber-50 text-amber-800 font-extrabold flex items-center justify-center text-xs border border-amber-200">
+                                        B
+                                    </div>
+                                    <span>Bob</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6 text-center">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-slate-100 text-slate-800 border border-slate-200">
+                                    70
+                                </span>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-3 max-w-xs">
+                                    <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden border border-slate-200/60">
+                                        <div class="bg-teal-500 h-2.5 rounded-full" style="width: 75%"></div>
+                                    </div>
+                                    <span class="font-bold text-xs text-slate-700 min-w-[35px]">75%</span>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="nav-buttons fixed bottom-0 left-0 right-0 z-50 md:hidden light-header p-2.5 px-4">
+        <div class="flex items-center justify-around max-w-md mx-auto">
+            <a href="{% url 'home' %}" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 transition text-[11px] font-medium">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-house text-sm"></i>
+                </div>
+                <span>Home</span>
+            </a>
+
+            <a href="{% url 'chores_list' %}" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 transition text-[11px] font-medium">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-list-check text-sm"></i>
+                </div>
+                <span>Chores</span>
+            </a>
+
+            <a href="{% url 'calendar' %}" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 transition text-[11px] font-medium">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500">
+                    <i class="fa-regular fa-calendar-days text-sm"></i>
+                </div>
+                <span>Calendar</span>
+            </a>
+
+            <a href="{% url 'leaderboard' %}" class="flex flex-col items-center gap-1 text-emerald-600 font-semibold text-[11px]">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
+                    <i class="fa-solid fa-trophy text-sm"></i>
+                </div>
+                <span>Leaderboard</span>
+            </a>
+
+            <a href="{% url 'settings' %}" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 transition text-[11px] font-medium">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-gear text-sm"></i>
+                </div>
+                <span>Settings</span>
+            </a>
+        </div>
     </div>
+
 </body>
 </html>

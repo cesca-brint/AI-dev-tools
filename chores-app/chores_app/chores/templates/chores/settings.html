@@ -1,122 +1,390 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50 text-slate-800">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings</title>
+    <title>Settings - Chores List App</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+        .light-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 232, 240, 0.85);
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
         }
-        .header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
+        .light-header {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.85);
         }
-        .container {
-            padding: 20px;
+        .nav-link {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .nav-buttons {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
+        .nav-link:hover {
+            transform: translateY(-1px);
         }
-        form {
-            display: flex;
-            flex-direction: column;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-        label {
-            margin-bottom: 5px;
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
         }
-        input, select {
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .member-item {
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: #fff;
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
             border-radius: 4px;
         }
-        .inline-form {
-            display: inline-block;
-            margin-top: 5px;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
-<body>
-    <div class="header">
-        <h1>Chores List App</h1>
-    </div>
-    <div class="container">
-        <div class="nav-buttons">
-            <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'chores_list' %}">Chores</a>
-            <a href="{% url 'calendar' %}">Calendar</a>
-            <a href="{% url 'settings' %}">Settings</a>
-            <a href="{% url 'leaderboard' %}">Leaderboard</a>
+<body class="min-h-full flex flex-col font-sans antialiased bg-gradient-to-br from-slate-50 via-emerald-50/20 to-teal-50/30 text-slate-800 pb-28 md:pb-12">
+
+    <header class="sticky top-0 z-40 light-header px-4 sm:px-8 py-3.5 shadow-sm">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-md shadow-emerald-500/20 text-white">
+                    <i class="fa-solid fa-house text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                        Chores List App
+                    </h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">Household Settings & Preferences</p>
+                </div>
+            </div>
+
+            <!-- Profile & Active Status Badge -->
+            <div class="flex items-center space-x-3">
+                <span class="hidden sm:inline-flex items-center px-3 py-1 text-xs font-semibold bg-emerald-100/80 text-emerald-700 border border-emerald-200 rounded-full">
+                    <i class="fa-solid fa-circle text-[8px] mr-1.5 text-emerald-500 animate-pulse"></i> Settings Mode
+                </span>
+                <div class="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition cursor-pointer shadow-sm">
+                    <i class="fa-regular fa-user text-sm"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-8 py-8 space-y-8">
+
+        <!-- Desktop Navigation Bar (Preserved Django URL Tags) -->
+        <nav class="hidden md:flex items-center justify-between light-card p-2 rounded-2xl">
+            <div class="flex items-center space-x-1 w-full justify-around">
+                <a href="{% url 'home' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <i class="fa-solid fa-house text-sm text-slate-400"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{% url 'chores_list' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <i class="fa-solid fa-list-check text-sm text-slate-400"></i>
+                    <span>Chores</span>
+                </a>
+                <a href="{% url 'calendar' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <i class="fa-regular fa-calendar-days text-sm text-slate-400"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="{% url 'leaderboard' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <i class="fa-solid fa-trophy text-sm text-slate-400"></i>
+                    <span>Leaderboard</span>
+                </a>
+                <a href="{% url 'settings' %}" class="nav-link flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold shadow-md shadow-emerald-600/20">
+                    <i class="fa-solid fa-gear text-sm"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Title Banner -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-2 text-emerald-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                    <i class="fa-solid fa-sliders"></i> Preferences & Control
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                    Settings
+                </h2>
+            </div>
         </div>
 
-        <h2>Reminders</h2>
-        {% if assignment %}
-            <form action="{% url 'update_reminders' assignment.id %}" method="post">
-                {% csrf_token %}
-                <label for="reminder_time">Reminder Time:</label>
-                <input type="time" id="reminder_time" name="reminder_time" required>
-                
-                <label for="enabled">Enable Reminders:</label>
-                <select id="enabled" name="enabled" required>
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                </select>
-                <button type="submit">Save Changes</button>
-            </form>
-        {% else %}
-            <p><em>No chore assignment selected to set reminders for.</em></p>
-        {% endif %}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-        <h2>Family Members</h2>
-        <ul>
-            {% for member in family_members %}
-                <li class="member-item">
-                    <strong>{{ member.name }}</strong>
-                    
-                    {% if member.id %}
-                        <form action="{% url 'edit_family_member' member.id %}" method="post" class="inline-form">
+            <!-- Reminders Section (Left Column) -->
+            <section class="lg:col-span-5 space-y-6">
+                <div class="light-card rounded-3xl p-6 sm:p-8 space-y-6 bg-white border border-slate-200/80">
+                    <div class="flex items-center space-x-3 pb-4 border-b border-slate-200/80">
+                        <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-regular fa-bell"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Reminders</h2>
+                            <p class="text-xs text-slate-500">Configure chore notification schedules</p>
+                        </div>
+                    </div>
+
+                    {% if assignment %}
+                        <form action="{% url 'update_reminders' assignment.id %}" method="post" class="space-y-5">
                             {% csrf_token %}
-                            <input type="text" name="name" placeholder="New Name" required>
-                            <button type="submit">Edit</button>
+                            <div class="space-y-2">
+                                <label for="reminder_time" class="block text-xs font-bold uppercase tracking-wider text-slate-600">
+                                    Reminder Time:
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-regular fa-clock text-sm"></i>
+                                    </div>
+                                    <input type="time" id="reminder_time" name="reminder_time" required
+                                           class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all shadow-sm">
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="enabled" class="block text-xs font-bold uppercase tracking-wider text-slate-600">
+                                    Enable Reminders:
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-solid fa-power-off text-sm"></i>
+                                    </div>
+                                    <select id="enabled" name="enabled" required
+                                            class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all shadow-sm appearance-none cursor-pointer">
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" 
+                                    class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-md shadow-emerald-600/20 active:scale-[0.99] transition-all flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-floppy-disk text-sm"></i>
+                                <span>Save Changes</span>
+                            </button>
                         </form>
-                        
-                        <form action="{% url 'delete_family_member' member.id %}" method="post" class="inline-form">
-                            {% csrf_token %}
-                            <button type="submit">Delete</button>
-                        </form>
+                    {% else %}
+                        <div class="p-6 bg-amber-50/60 border border-amber-200/80 rounded-2xl text-center space-y-2">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-500 text-2xl mb-1 block"></i>
+                            <p class="text-sm text-amber-900 font-semibold">No assignment selected</p>
+                            <p class="text-xs text-amber-700/80"><em>No chore assignment selected to set reminders for. Select an assignment from the Chores List page to configure alerts.</em></p>
+                        </div>
                     {% endif %}
-                </li>
-            {% empty %}
-                <li>No family members added yet.</li>
-            {% endfor %}
-        </ul>
+                </div>
+            </section>
 
-        {% if 'add_family_member' in url_names %}
-            <form action="{% url 'add_family_member' %}" method="post">
-                {% csrf_token %}
-                <label for="name">Add New Member:</label>
-                <input type="text" id="name" name="name" required>
-                <button type="submit">Add</button>
-            </form>
-        {% endif %}
+            <!-- Family Members Section (Right Column) -->
+            <section class="lg:col-span-7 space-y-6">
+                <div class="light-card rounded-3xl p-6 sm:p-8 space-y-6 bg-white border border-slate-200/80">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-200/80">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-900">Family Members</h2>
+                                <p class="text-xs text-slate-500">Manage household contributors</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member List -->
+                    <ul id="family-members-list" class="space-y-4">
+                        {% for member in family_members %}
+                            <li class="member-item p-4 sm:p-5 bg-slate-50 border border-slate-200/80 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:border-slate-300 hover:bg-slate-100/50">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 text-white font-extrabold flex items-center justify-center text-sm shadow-sm">
+                                        {{ member.name|first|upper }}
+                                    </div>
+                                    <strong class="text-slate-900 font-bold text-base">{{ member.name }}</strong>
+                                </div>
+                                
+                                {% if member.id %}
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <!-- Inline Edit Form -->
+                                        <form action="{% url 'edit_family_member' member.id %}" method="post" class="inline-form flex items-center gap-2 flex-1 sm:flex-none">
+                                            {% csrf_token %}
+                                            <input type="text" name="name" placeholder="New Name" required
+                                                   class="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 w-28 sm:w-32 shadow-sm">
+                                            <button type="submit" 
+                                                    class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs rounded-xl transition shadow-sm flex items-center gap-1">
+                                                <i class="fa-solid fa-pen text-[10px]"></i>
+                                                <span>Edit</span>
+                                            </button>
+                                        </form>
+                                        
+                                        <!-- Inline Delete Form -->
+                                        <form action="{% url 'delete_family_member' member.id %}" method="post" class="inline-form">
+                                            {% csrf_token %}
+                                            <button type="submit" 
+                                                    class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-semibold text-xs rounded-xl transition shadow-sm flex items-center gap-1">
+                                                <i class="fa-solid fa-trash-can text-[10px]"></i>
+                                                <span>Delete</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </li>
+                        {% empty %}
+                            <li id="empty-members-state" class="p-8 text-center bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-slate-500 space-y-2">
+                                <i class="fa-solid fa-user-slash text-2xl text-slate-400 mb-1 block"></i>
+                                <span class="text-sm font-medium">No family members added yet.</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- Add Family Member Form Section -->
+                    {% if 'add_family_member' in url_names %}
+                        <div class="pt-4 border-t border-slate-200/80">
+                            <form action="{% url 'add_family_member' %}" method="post" class="space-y-3">
+                                {% csrf_token %}
+                                <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-600">
+                                    Add New Member:
+                                </label>
+                                <div class="flex items-center gap-2">
+                                    <div class="relative flex-1">
+                                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                            <i class="fa-regular fa-user text-sm"></i>
+                                        </div>
+                                        <input type="text" id="name" name="name" required placeholder="Enter family member's name..."
+                                               class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm placeholder-slate-400 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all shadow-sm">
+                                    </div>
+                                    <button type="submit" 
+                                            class="py-2.5 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-xl transition shadow-md shadow-emerald-600/20 active:scale-[0.98] flex items-center space-x-1.5 whitespace-nowrap">
+                                        <i class="fa-solid fa-user-plus text-xs"></i>
+                                        <span>Add</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Mobile Navigation Dock (Preserved Django URL Tags) -->
+    <div class="nav-buttons fixed bottom-0 left-0 right-0 z-50 md:hidden light-header p-2.5 px-4">
+        <div class="flex items-center justify-around max-w-md mx-auto">
+            <a href="{% url 'home' %}" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 transition text-[11px] font-medium">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-house text-sm"></i>
+                </div>
+                <span>Home</span>
+            </a>
+
+            <a href="{% url 'chores_list' %}" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 transition text-[11px] font-medium">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-list-check text-sm"></i>
+                </div>
+                <span>Chores</span>
+            </a>
+
+            <a href="{% url 'calendar' %}" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 transition text-[11px] font-medium">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500">
+                    <i class="fa-regular fa-calendar-days text-sm"></i>
+                </div>
+                <span>Calendar</span>
+            </a>
+
+            <a href="{% url 'leaderboard' %}" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 transition text-[11px] font-medium">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-trophy text-sm"></i>
+                </div>
+                <span>Leaderboard</span>
+            </a>
+
+            <a href="{% url 'settings' %}" class="flex flex-col items-center gap-1 text-emerald-600 font-semibold text-[11px]">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
+                    <i class="fa-solid fa-gear text-sm"></i>
+                </div>
+                <span>Settings</span>
+            </a>
+        </div>
     </div>
+
+    <script>
+        // Fallback script for standalone interactive preview when Django tags aren't parsed by server
+        document.addEventListener('DOMContentLoaded', () => {
+            const memberList = document.getElementById('family-members-list');
+            const emptyState = document.getElementById('empty-members-state');
+            
+            // Check if Django didn't output list items (standalone file viewer test mode)
+            if (memberList && memberList.children.length === 0) {
+                const sampleMembers = [
+                    { id: 1, name: 'John' },
+                    { id: 2, name: 'Jane' },
+                    { id: 3, name: 'Bob' }
+                ];
+
+                if (emptyState) emptyState.remove();
+
+                sampleMembers.forEach(member => {
+                    const li = document.createElement('li');
+                    li.className = 'member-item p-4 sm:p-5 bg-slate-50 border border-slate-200/80 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:border-slate-300 hover:bg-slate-100/50';
+                    li.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 text-white font-extrabold flex items-center justify-center text-sm shadow-sm">
+                                ${member.name.charAt(0)}
+                            </div>
+                            <strong class="text-slate-900 font-bold text-base">${member.name}</strong>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <form action="#" method="post" class="inline-form flex items-center gap-2 flex-1 sm:flex-none" onsubmit="event.preventDefault();">
+                                <input type="text" name="name" placeholder="New Name" required
+                                       class="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 w-28 sm:w-32 shadow-sm">
+                                <button type="submit" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs rounded-xl transition shadow-sm flex items-center gap-1">
+                                    <i class="fa-solid fa-pen text-[10px]"></i>
+                                    <span>Edit</span>
+                                </button>
+                            </form>
+                            <form action="#" method="post" class="inline-form" onsubmit="event.preventDefault(); this.closest('li').remove();">
+                                <button type="submit" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-semibold text-xs rounded-xl transition shadow-sm flex items-center gap-1">
+                                    <i class="fa-solid fa-trash-can text-[10px]"></i>
+                                    <span>Delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    `;
+                    memberList.appendChild(li);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
